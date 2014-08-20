@@ -21,6 +21,18 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// creiamo connessione a mongoDB
+var mongo = require('mongodb');
+var monk = require('monk');
+var db = monk('localhost:27017/androServer');
+
+// rendiamo il db accessibile dalle routes
+//non molto ottimale (ad OGNI richiesta incodiamo l oggetto db, non filtriamo per tipo di richiesta)
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
+
 app.use('/', routes);
 app.use('/users', users);
 
