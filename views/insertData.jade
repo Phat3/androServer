@@ -5,5 +5,13 @@ block content
 
     script.
         function doPost(){
-            console.log('premuto')
+             $.ajax({
+            url: '/insert',
+                type: 'POST',
+                data: {type: "brute", java: 4444, jni: 343, rs: 23},
+                success: function(data){
+                        console.log(data)
+                    }
+
+             });
         }
