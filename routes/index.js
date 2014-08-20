@@ -27,6 +27,9 @@ router.get('/insertData', function(req, res) {
 });
 
 router.post('/insert', function(req, res) {
+
+    console.log(req.body);
+    /*
   // Set our internal DB variable
     var db = req.db;
 
@@ -43,6 +46,7 @@ router.post('/insert', function(req, res) {
             res.send("benissimo");
         }
     });
+*/
 });
 
 module.exports = router;
