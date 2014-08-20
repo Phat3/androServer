@@ -21,5 +21,10 @@ router.get('/getData', function(req, res) {
     });
 });
 
+/* GET insert page. */
+router.get('/insertData', function(req, res) {
+  res.render('insertData');
+});
+
 module.exports = router;
 

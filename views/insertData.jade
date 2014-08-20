@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    a(class="btn btn-default" onclick="doPost()")= "postData"
+
+    script.
+        function doPost(){
+            console.log('premuto')
+        }
