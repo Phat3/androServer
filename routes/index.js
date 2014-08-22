@@ -3,7 +3,69 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
+
+    var db = req.db;
+
+    var perfCollection = db.get('performanceCollection');
+
+
+    //prendiamo i valori dstinti in base al modello
+    perfCollection.distinct('model', function(e, docs){
+        //res.render('index', { title: 'Express', models: docs });
+
+        var java = []
+        var jni = []
+        var rs = []
+
+        console.log(docs)
+
+
+        docs.forEach(function(value, key){
+            console.log(value)
+
+            //scorro per ogni record del modello
+            perfCollection.find( { model : value }, function(e, documents){
+
+
+                    var count = 0;
+                    var sumJava = 0;
+                    var sumRs = 0;
+                    var sumJni = 0;
+
+                    documents.forEach(function(val){
+
+                        var valoriJava = (val.java.replace('[','').replace(']','').split(','));
+                        var valoriJni = (val.jni.replace('[','').replace(']','').split(','));
+                        var valoriRs = (val.rs.replace('[','').replace(']','').split(','));
+
+                        sumJava += parseInt(valoriJava[0])
+                        sumJni += parseInt(valoriJni[0])
+                        sumRs += parseInt(valoriRs[0])
+                        count ++;
+
+                   })
+
+                   console.log(count);
+                   java.push(sumJava/count)
+                   jni.push(sumJni/count)
+                   rs.push(sumRs/count)
+                   console.log('la lunghezza e ' + docs.length)
+                   console.log('la chiave e ' + key)
+                   console.log(key === docs.length)
+                  if (key === (docs.length - 1)){
+                    res.render('index', { title: 'Express', models: docs, java : java, jni: jni, rs : rs });
+                  }
+            })
+
+        })
+
+
+
+    })
+
+
+
+
 });
 
 /* GET Data page. */
