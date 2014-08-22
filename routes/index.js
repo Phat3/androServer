@@ -46,7 +46,24 @@ router.post('/insert', function(req, res) {
         }
     });
 
-    console.log( req.body.battery != '[0, 0, 0]')
+    //se riceviamo i test sulla batteria inseriamo
+    if (req.body.battery != '[0, 0, 0]'){
+
+    var battery = {type : req.body.type, battery : req.body.battery , vendor : req.body.vendor, model : req.body.model }
+
+    var collection = db.get('batteryCollection');
+
+         // inseriamo a db
+    collection.insert(battery, function (err, doc) {
+        if (err) {
+            // If it failed, return error
+            res.send("There was a problem adding the information to the database.");
+        }
+        else {
+            res.send("benissimo");
+        }
+    });
+    }
 
 });
 
