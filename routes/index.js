@@ -21,23 +21,22 @@ router.get('/getData', function(req, res) {
     });
 });
 
-/* GET insert page. */
-router.get('/insertData', function(req, res) {
-  res.render('insertData');
-});
+
 
 router.post('/insert', function(req, res) {
 
     console.log(req.body);
 
-  // Set our internal DB variable
+    //creiamo il json giusto
+    var performance = {type : req.body.type, java : req.body.java, jni : req.body.jni, rs : req.body.rs, vendor : req.body.vendor, model : req.body.model }
+
     var db = req.db;
 
-    // Set our collection
+    // prendiamo la collection giusta
     var collection = db.get('performanceCollection');
 
-    // Submit to the DB
-    collection.insert(req.body, function (err, doc) {
+    // inseriamo a db
+    collection.insert(performance, function (err, doc) {
         if (err) {
             // If it failed, return error
             res.send("There was a problem adding the information to the database.");
@@ -46,6 +45,8 @@ router.post('/insert', function(req, res) {
             res.send("benissimo");
         }
     });
+
+    console.log( req.body.battery != '[0, 0, 0]')
 
 });
 
