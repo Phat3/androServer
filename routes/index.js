@@ -42,7 +42,7 @@ router.get('/', function(req, res) {
                         //continuo a somare e ad incrementare il contatore fino a che ho risultati
                         sumJava += ( (parseInt(valoriJava[0]) + parseInt(valoriJava[1])  + parseInt(valoriJava[2])) / 3 )
                         sumJni += ( (parseInt(valoriJni[0]) + parseInt(valoriJni[1])  + parseInt(valoriJni[2])) / 3 )
-                        sumRs += ( (parseInt(valorirs[0]) + parseInt(valorirs[1])  + parseInt(valorirs[2])) / 3 )
+                        sumRs += ( (parseInt(valoriRs[0]) + parseInt(valoriRs[1])  + parseInt(valoriRs[2])) / 3 )
                         count ++;
 
                    })
