@@ -10,25 +10,29 @@ router.get('/', function(req, res) {
 
     //ricavo i modelli distinti
     perfCollection.distinct('model', function(e, docs){
-        //res.render('index', { title: 'Express', models: docs });
 
+        //array da ritornare opportunamente riempiti
         var java = []
         var jni = []
         var rs = []
         var models = []
+
         //scorro tra tutti i modelli distinti
         docs.forEach(function(value, key){
             console.log(value)
 
             //ricavo tutti i record che hanno come modello quello specficato
-            perfCollection.find( { model : value, type : 'prova' }, function(e, documents){
+            perfCollection.find( { model : value, type : 'gray' }, function(e, documents){
 
                     //inizializzo le variabli di calcolo
                     var count = 0;
                     var sumJava = 0;
                     var sumRs = 0;
                     var sumJni = 0;
-                    if (documents.length != 0){ models.push(docs[key]) }
+                    //se ho risultati allora lo mostro se no non lo mostro nel grafico (potrebbe esestere il modello ma con altri benchmark (FA SCHIFO))
+                    if (documents.length != 0){
+                        models.push(docs[key])
+                    }
 
                     //scorro per ogni record e incremento il cotatore e somma
                     documents.forEach(function(val){
@@ -47,9 +51,12 @@ router.get('/', function(req, res) {
                    })
 
                     //riempio gli array con i dati calcolati in base alla media
-                   java.push(sumJava/count)
-                   jni.push(sumJni/count)
-                   rs.push(sumRs/count)
+                    //li metto solo se count e > 0 per non avere bug grafici (models e risultati devono avere la stessa lunghezza)
+                    if (count != 0){
+                       java.push(sumJava/count)
+                       jni.push(sumJni/count)
+                       rs.push(sumRs/count)
+                   }
 
                    //se ho finito (le query a mongo db sono asincrone quindi non aspetta la fine a fare il render della pagina)
                   if (key === (docs.length - 1)){
