@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-// rotta che disegna il grafico di performance e batteria nel caso base (grayscale piu piccolo)
+// rotta che disegna il grafico di performance e batteria nel caso base (grayscale)
 router.get('/', function(req, res) {
 
     var db = req.db;
