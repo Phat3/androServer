@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-// rotta che disegna il grafico di performance e batteria nel caso base(bruteforce piu piccolo)
+// rotta che disegna il grafico di performance e batteria nel caso base (grayscale piu piccolo)
 router.get('/', function(req, res) {
 
     var db = req.db;
@@ -9,7 +9,7 @@ router.get('/', function(req, res) {
     var perfCollection = db.get('performanceCollection');
 
     //ricavo i modelli distinti
-    perfCollection.distinct('model', function(e, docs){
+    perfCollection.distinct('model', { type : 'gray' }, function(e, docs){
 
         //array da ritornare opportunamente riempiti
         var java = []
@@ -19,7 +19,6 @@ router.get('/', function(req, res) {
 
         //scorro tra tutti i modelli distinti
         docs.forEach(function(value, key){
-            console.log(value)
 
             //ricavo tutti i record che hanno come modello quello specficato
             perfCollection.find( { model : value, type : 'gray' }, function(e, documents){
@@ -29,10 +28,8 @@ router.get('/', function(req, res) {
                     var sumJava = 0;
                     var sumRs = 0;
                     var sumJni = 0;
-                    //se ho risultati allora lo mostro se no non lo mostro nel grafico (potrebbe esestere il modello ma con altri benchmark (FA SCHIFO))
-                    if (documents.length != 0){
-                        models.push(docs[key])
-                    }
+                    models.push(docs[key])
+
 
                     //scorro per ogni record e incremento il cotatore e somma
                     documents.forEach(function(val){
@@ -51,12 +48,9 @@ router.get('/', function(req, res) {
                    })
 
                     //riempio gli array con i dati calcolati in base alla media
-                    //li metto solo se count e > 0 per non avere bug grafici (models e risultati devono avere la stessa lunghezza)
-                    if (count != 0){
                        java.push(sumJava/count)
                        jni.push(sumJni/count)
                        rs.push(sumRs/count)
-                   }
 
                    //se ho finito (le query a mongo db sono asincrone quindi non aspetta la fine a fare il render della pagina)
                   if (key === (docs.length - 1)){
@@ -64,14 +58,15 @@ router.get('/', function(req, res) {
                   }
             })
 
+
         })
 
-
+        //caso in cui si abbiano 0 risultati, ci sarebbe un caricamento infinito altrimenti
+        if (docs.length == 0){
+                res.render('index', { title: 'Express', models: models, java : java, jni: jni, rs : rs });
+        }
 
     })
-
-
-
 
 });
 
