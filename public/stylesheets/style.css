@@ -6,3 +6,13 @@ body {
 a {
   color: #00B7FF;
 }
+
+.centered-title{
+    text-align: center;
+}
+
+.misure-grafico-std{
+    margin-top: 30px;
+    width: 100%;
+    height: 400px;
+}

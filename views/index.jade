@@ -1,10 +1,54 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    #container.row.centered-title
+        h1 ANDROBENCHMARK SERVER
+        p Welcome to AndroBenchmark statistic server
 
-  // - usiamo il punto quando vogliamo fare tag su piu righe in jade
-  script.
-            console.log('ciao')
-            console.log('bene')
+    #performance-graph.row.misure-grafico-std
+        h4 Grafico performance
+
+    #battery-graph.row.misure-grafico-std
+        h4 grafico batteria
+
+
+    script(src="/vendor/highcharts.js")
+
+    //- usiamo il punto quando vogliamo fare tag su piu righe in jade
+    script.
+
+            $(document).ready(function(){
+                console.log('#{title}')
+            });
+
+            $(function () {
+                $('#performance-graph').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Performance Graph'
+                    },
+                    xAxis: {
+                        categories: ['Apples', 'Bananas', 'Oranges']
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Execution Time [ms]'
+                        }
+                    },
+                    series: [{
+                        name: 'Java',
+                        data: [1, 3, 4]
+                    },
+                    {
+                        name: 'Jni',
+                        data: [5, 7, 3]
+                    },
+                    {
+                        name: 'RenderScript',
+                        data: [3, 4, 6]
+                    },
+                    ]
+                });
+            });
