@@ -1,43 +1,44 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+// rotta che disegna il grafico di performance e batteria nel caso base(bruteforce piu piccolo)
 router.get('/', function(req, res) {
 
     var db = req.db;
 
     var perfCollection = db.get('performanceCollection');
 
-
-    //prendiamo i valori dstinti in base al modello
+    //ricavo i modelli distinti
     perfCollection.distinct('model', function(e, docs){
         //res.render('index', { title: 'Express', models: docs });
 
         var java = []
         var jni = []
         var rs = []
-
-        console.log(docs)
-
-
+        var models = []
+        //scorro tra tutti i modelli distinti
         docs.forEach(function(value, key){
             console.log(value)
 
-            //scorro per ogni record del modello
-            perfCollection.find( { model : value }, function(e, documents){
+            //ricavo tutti i record che hanno come modello quello specficato
+            perfCollection.find( { model : value, type : 'prova' }, function(e, documents){
 
-
+                    //inizializzo le variabli di calcolo
                     var count = 0;
                     var sumJava = 0;
                     var sumRs = 0;
                     var sumJni = 0;
+                    if (documents.length != 0){ models.push(docs[key]) }
 
+                    //scorro per ogni record e incremento il cotatore e somma
                     documents.forEach(function(val){
 
+                        //ricavo i valori dagli oggetti ( FA SCHIFO)
                         var valoriJava = (val.java.replace('[','').replace(']','').split(','));
                         var valoriJni = (val.jni.replace('[','').replace(']','').split(','));
                         var valoriRs = (val.rs.replace('[','').replace(']','').split(','));
 
+                        //continuo a somare e ad incrementare il contatore fino a che ho risultati
                         sumJava += parseInt(valoriJava[0])
                         sumJni += parseInt(valoriJni[0])
                         sumRs += parseInt(valoriRs[0])
@@ -45,15 +46,14 @@ router.get('/', function(req, res) {
 
                    })
 
-                   console.log(count);
+                    //riempio gli array con i dati calcolati in base alla media
                    java.push(sumJava/count)
                    jni.push(sumJni/count)
                    rs.push(sumRs/count)
-                   console.log('la lunghezza e ' + docs.length)
-                   console.log('la chiave e ' + key)
-                   console.log(key === docs.length)
+
+                   //se ho finito (le query a mongo db sono asincrone quindi non aspetta la fine a fare il render della pagina)
                   if (key === (docs.length - 1)){
-                    res.render('index', { title: 'Express', models: docs, java : java, jni: jni, rs : rs });
+                    res.render('index', { title: 'Express', models: models, java : java, jni: jni, rs : rs });
                   }
             })
 
