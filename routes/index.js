@@ -21,6 +21,9 @@ router.get('/getData', function(req, res) {
     });
 });
 
+router.get('/insertData', function(req, res){
+    res.render('insertData')
+})
 
 
 router.post('/insert', function(req, res) {
@@ -48,9 +51,9 @@ router.post('/insert', function(req, res) {
 
     //se riceviamo i test sulla batteria inseriamo
     if (req.body.battery != '[0, 0, 0]'){
-
+        console.log('entrato')
     var battery = {type : req.body.type, battery : req.body.battery , vendor : req.body.vendor, model : req.body.model }
-
+    console.log(battery);
     var collection = db.get('batteryCollection');
 
          // inseriamo a db
