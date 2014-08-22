@@ -54,7 +54,7 @@ router.get('/', function(req, res) {
 
                    //se ho finito (le query a mongo db sono asincrone quindi non aspetta la fine a fare il render della pagina)
                   if (key === (docs.length - 1)){
-                    res.render('index', { title: 'Express', models: models, java : java, jni: jni, rs : rs });
+                    res.render('index', { models: models, java : java, jni: jni, rs : rs });
                   }
             })
 
@@ -63,7 +63,7 @@ router.get('/', function(req, res) {
 
         //caso in cui si abbiano 0 risultati, ci sarebbe un caricamento infinito altrimenti
         if (docs.length == 0){
-                res.render('index', { title: 'Express', models: models, java : java, jni: jni, rs : rs });
+                res.render('index', { models: models, java : java, jni: jni, rs : rs });
         }
 
     })
