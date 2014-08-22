@@ -28,7 +28,7 @@ router.get('/', function(req, res) {
                     var sumJava = 0;
                     var sumRs = 0;
                     var sumJni = 0;
-                    models.push(docs[key])
+                    models.push(documents[0].vendor + ' ' + docs[key])
 
 
                     //scorro per ogni record e incremento il cotatore e somma
