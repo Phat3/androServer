@@ -22,7 +22,7 @@ block content
 
     //- usiamo il punto quando vogliamo fare tag su piu righe in jade
     script.
-
+            //teniamo traccia del graficoselezionato (di default grayscale)
             var selected = 0
 
             $(document).ready(function(){
@@ -30,10 +30,14 @@ block content
                 $('#gray').css('background', 'orange')
                 //ricaviamo i nomi dei modelli
                var models = '#{models}'.split(",");
+               var modelsBattery = '#{modelsBattery}'.split(",");
 
                var javaNumber = []
                var jniNumber = []
                var rsNumber = []
+               var javaBatteryNumber = []
+               var jniBatteryNumber = []
+               var rsBatteryNumber = []
 
                //rendiamo gli arrei ritornati degli interi cosi che possano essere plottati (FA SCHIFO LO SO)
                '#{java}'.split(',').forEach(function(value,key){
@@ -46,6 +50,18 @@ block content
 
                '#{rs}'.split(',').forEach(function(value,key){
                     rsNumber.push(parseInt(value))
+                })
+
+               '#{javaBattery}'.split(',').forEach(function(value,key){
+                    javaBatteryNumber.push(parseInt(value))
+                })
+
+               '#{jniBattery}'.split(',').forEach(function(value,key){
+                    jniBatteryNumber.push(parseInt(value))
+                })
+
+               '#{rsBattery}'.split(',').forEach(function(value,key){
+                    rsBatteryNumber.push(parseInt(value))
                 })
 
                //creiamo il grafico con le opportune colonne
@@ -78,14 +94,45 @@ block content
                     },
                     ]
                 });
+
+                //creiamo il grafico con le opportune colonne
+                $('#battery-graph').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Battery Graph'
+                    },
+                    xAxis: {
+                        categories: modelsBattery
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Number of cycles'
+                        }
+                    },
+                    series: [{
+                        name: 'Java',
+                        data: javaBatteryNumber
+                    },
+                    {
+                        name: 'Jni',
+                        data: jniBatteryNumber
+                    },
+                    {
+                        name: 'RenderScript',
+                        data: rsBatteryNumber
+                    },
+                    ]
+                });
             });
 
             function drawGraph(id){
-
+                //se seleziono quello gia selezionato ritorno
                 if(id == selected){
                     return
                 }
-
+                //abbellimenti grafici
                 if(id == 0){
                     selected = 0
                      $('#gray').css('background', 'orange')
@@ -108,7 +155,7 @@ block content
                     $('#brute').css('background', 'orange')
 
                  }
-
+                 //chiamata al server per ricavare i valori necessari
                   $.ajax({
                     url: '/createGraph',
                         type: 'POST',
@@ -144,6 +191,37 @@ block content
                                             },
                                             ]
                                         });
+
+                                //creiamo il grafico con le opportune colonne
+                                $('#battery-graph').highcharts({
+                                    chart: {
+                                        type: 'column'
+                                    },
+                                    title: {
+                                        text: 'Battery Graph'
+                                    },
+                                    xAxis: {
+                                        categories: data.modelsBattery
+                                    },
+                                    yAxis: {
+                                        title: {
+                                            text: 'Number of cycles'
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'Java',
+                                        data: data.javaBattery
+                                    },
+                                    {
+                                        name: 'Jni',
+                                        data: data.jniBattery
+                                    },
+                                    {
+                                        name: 'RenderScript',
+                                        data: data.rsBattery
+                                    },
+                                    ]
+                                });
 
                             }
 
