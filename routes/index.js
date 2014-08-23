@@ -134,5 +134,84 @@ router.post('/insert', function(req, res) {
 
 });
 
+router.post('/createGraph', function(req, res){
+
+    var type
+
+    if (req.body.id == 0){
+        type = 'gray'
+    }
+    else if(req.body.id == 1){
+        type = 'matrix'
+    }
+    else{
+        type = 'brute'
+    }
+
+    var db = req.db;
+
+    var perfCollection = db.get('performanceCollection');
+
+    //ricavo i modelli distinti
+    perfCollection.distinct('model', { type : type }, function(e, docs){
+
+        //array da ritornare opportunamente riempiti
+        var java = []
+        var jni = []
+        var rs = []
+        var models = []
+
+        //scorro tra tutti i modelli distinti
+        docs.forEach(function(value, key){
+
+            //ricavo tutti i record che hanno come modello quello specficato
+            perfCollection.find( { model : value, type : type }, function(e, documents){
+
+                    //inizializzo le variabli di calcolo
+                    var count = 0;
+                    var sumJava = 0;
+                    var sumRs = 0;
+                    var sumJni = 0;
+                    models.push(documents[0].vendor + ' ' + docs[key])
+
+
+                    //scorro per ogni record e incremento il cotatore e somma
+                    documents.forEach(function(val){
+
+                        //ricavo i valori dagli oggetti ( FA SCHIFO)
+                        var valoriJava = (val.java.replace('[','').replace(']','').split(','));
+                        var valoriJni = (val.jni.replace('[','').replace(']','').split(','));
+                        var valoriRs = (val.rs.replace('[','').replace(']','').split(','));
+
+                        //continuo a somare e ad incrementare il contatore fino a che ho risultati
+                        sumJava += ( (parseInt(valoriJava[0]) + parseInt(valoriJava[1])  + parseInt(valoriJava[2])) / 3 )
+                        sumJni += ( (parseInt(valoriJni[0]) + parseInt(valoriJni[1])  + parseInt(valoriJni[2])) / 3 )
+                        sumRs += ( (parseInt(valoriRs[0]) + parseInt(valoriRs[1])  + parseInt(valoriRs[2])) / 3 )
+                        count ++;
+
+                   })
+
+                    //riempio gli array con i dati calcolati in base alla media
+                       java.push(sumJava/count)
+                       jni.push(sumJni/count)
+                       rs.push(sumRs/count)
+
+                   //se ho finito (le query a mongo db sono asincrone quindi non aspetta la fine a fare il render della pagina)
+                  if (key === (docs.length - 1)){
+                    res.send({ models: models, java : java, jni: jni, rs : rs });
+                  }
+            })
+
+
+        })
+
+        //caso in cui si abbiano 0 risultati, ci sarebbe un caricamento infinito altrimenti
+        if (docs.length == 0){
+                res.send({ models: models, java : java, jni: jni, rs : rs })
+        }
+
+        })
+})
+
 module.exports = router;
 

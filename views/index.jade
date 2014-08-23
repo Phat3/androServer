@@ -5,6 +5,12 @@ block content
         h1 ANDROBENCHMARK SERVER
         p Welcome to AndroBenchmark statistic server
 
+    .row.centered-title.top-20px
+        .btn-group
+            a(id="gray" class ="btn btn-default" onclick="drawGraph(0)") GrayScale
+            a(id="matrix"  class ="btn btn-default" onclick="drawGraph(1)") Matrix
+            a(id="brute"  class ="btn btn-default" onclick="drawGraph(2)") Bruteforce
+
     #performance-graph.row.misure-grafico-std
         h4 Grafico performance
 
@@ -17,8 +23,11 @@ block content
     //- usiamo il punto quando vogliamo fare tag su piu righe in jade
     script.
 
+            var selected = 0
+
             $(document).ready(function(){
 
+                $('#gray').css('background', 'orange')
                 //ricaviamo i nomi dei modelli
                var models = '#{models}'.split(",");
 
@@ -70,4 +79,74 @@ block content
                     ]
                 });
             });
+
+            function drawGraph(id){
+
+                if(id == selected){
+                    return
+                }
+
+                if(id == 0){
+                    selected = 0
+                     $('#gray').css('background', 'orange')
+                     $('#matrix').css('background', 'white')
+                     $('#brute').css('background', 'white')
+
+                 }
+
+                 else if(id == 1){
+                    selected = 1
+                    $('#gray').css('background', 'white')
+                    $('#matrix').css('background', 'orange')
+                    $('#brute').css('background', 'white')
+
+                 }
+                 else if(id == 2){
+                    selected = 2
+                    $('#gray').css('background', 'white')
+                    $('#matrix').css('background', 'white')
+                    $('#brute').css('background', 'orange')
+
+                 }
+
+                  $.ajax({
+                    url: '/createGraph',
+                        type: 'POST',
+                        data: {id : id},
+                        success: function(data){
+
+                                 $('#performance-graph').highcharts({
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: 'Performance Graph'
+                                            },
+                                            xAxis: {
+                                                categories: data.models
+                                            },
+                                            yAxis: {
+                                                title: {
+                                                    text: 'Mean Execution Time [ms]'
+                                                }
+                                            },
+                                            series: [{
+                                                name: 'Java',
+                                                data: data.java
+                                            },
+                                            {
+                                                name: 'Jni',
+                                                data: data.jni
+                                            },
+                                            {
+                                                name: 'RenderScript',
+                                                data: data.rs
+                                            },
+                                            ]
+                                        });
+
+                            }
+
+                     });
+            }
 
