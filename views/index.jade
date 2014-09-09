@@ -14,6 +14,9 @@ block content
     #performance-graph.row.misure-grafico-std
         h4 Grafico performance
 
+    #performance-graph2.row.misure-grafico-std
+        h4 Grafico performance
+
     #battery-graph.row.misure-grafico-std
         h4 grafico batteria
 
@@ -84,6 +87,34 @@ block content
                         name: 'Java',
                         data: javaNumber
                     },
+                    {
+                        name: 'Jni',
+                        data: jniNumber
+                    },
+                    {
+                        name: 'RenderScript',
+                        data: rsNumber
+                    },
+                    ]
+                });
+
+                //creiamo il grafico con le opportune colonne
+                $('#performance-graph2').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Performance Graph'
+                    },
+                    xAxis: {
+                        categories: models
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Mean Execution Time [ms]'
+                        }
+                    },
+                    series: [
                     {
                         name: 'Jni',
                         data: jniNumber
