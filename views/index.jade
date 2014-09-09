@@ -15,10 +15,13 @@ block content
         h4 Grafico performance
 
     #performance-graph2.row.misure-grafico-std
-        h4 Grafico performance
+        h4 Grafico performance ( Jni and Renderscript only )
 
     #battery-graph.row.misure-grafico-std
         h4 grafico batteria
+
+    #battery-graph.row.misure-grafico-std
+        h4 grafico batteria ( Jni and Renderscript only ))
 
 
     script(src="/vendor/highcharts.js")
@@ -156,6 +159,33 @@ block content
                     },
                     ]
                 });
+
+                 $('#battery-graph2').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Battery Graph'
+                    },
+                    xAxis: {
+                        categories: modelsBattery
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Number of cycles'
+                        }
+                    },
+                    series: [
+                    {
+                        name: 'Jni',
+                        data: jniBatteryNumber
+                    },
+                    {
+                        name: 'RenderScript',
+                        data: rsBatteryNumber
+                    },
+                    ]
+                });
             });
 
             function drawGraph(id){
@@ -223,6 +253,33 @@ block content
                                             ]
                                         });
 
+                                 $('#performance-graph2').highcharts({
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: 'Performance Graph'
+                                            },
+                                            xAxis: {
+                                                categories: data.models
+                                            },
+                                            yAxis: {
+                                                title: {
+                                                    text: 'Mean Execution Time [ms]'
+                                                }
+                                            },
+                                            series: [
+                                            {
+                                                name: 'Jni',
+                                                data: data.jni
+                                            },
+                                            {
+                                                name: 'RenderScript',
+                                                data: data.rs
+                                            },
+                                            ]
+                                        });
+
                                 //creiamo il grafico con le opportune colonne
                                 $('#battery-graph').highcharts({
                                     chart: {
@@ -243,6 +300,34 @@ block content
                                         name: 'Java',
                                         data: data.javaBattery
                                     },
+                                    {
+                                        name: 'Jni',
+                                        data: data.jniBattery
+                                    },
+                                    {
+                                        name: 'RenderScript',
+                                        data: data.rsBattery
+                                    },
+                                    ]
+                                });
+
+                                    //creiamo il grafico con le opportune colonne
+                                $('#battery-graph2').highcharts({
+                                    chart: {
+                                        type: 'column'
+                                    },
+                                    title: {
+                                        text: 'Battery Graph'
+                                    },
+                                    xAxis: {
+                                        categories: data.modelsBattery
+                                    },
+                                    yAxis: {
+                                        title: {
+                                            text: 'Number of cycles'
+                                        }
+                                    },
+                                    series: [
                                     {
                                         name: 'Jni',
                                         data: data.jniBattery
